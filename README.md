@@ -11,3 +11,6 @@ Follow the instructions [here](https://make-school-courses.github.io/CS-2.2-Grap
 2. What is one application of Breadth-first Search (besides social networks)? Describe how BFS is used for that application. If you need some ideas, check out [this article](https://www.geeksforgeeks.org/applications-of-breadth-first-traversal/?ref=rp).
 
 (Your answer goes here)
+
+## Personal Notes
+[Notes](https://www.notion.so/CS-2-2-Graphs-Recursions-199fb85845bc4600ac9de809fbc26256)
