@@ -87,7 +87,7 @@ class Graph:
         vertex_id1 (string): The unique identifier of the first vertex.
         vertex_id2 (string): The unique identifier of the second vertex.
         """
-        vertex_2 = self.get_vertex(vertex_2)
+        vertex_2 = self.get_vertex(vertex_id2)
         self.__vertex_dict[vertex_id1].add_neighbor(vertex_2)
         if not self.__is_directed:
             self.__vertex_dict[vertex_id2].add_neighbor(
@@ -171,10 +171,6 @@ class Graph:
             current_vertex_obj = queue.pop()  # vertex obj to visit next
             current_vertex_id = current_vertex_obj.get_id()
 
-            # found target, can stop the loop early
-            if current_vertex_id == target_id:
-                break
-
             neighbors = current_vertex_obj.get_neighbors()
             for neighbor in neighbors:
                 if neighbor.get_id() not in vertex_id_to_path:
@@ -201,35 +197,36 @@ class Graph:
         Returns:
         list<string>: All vertex ids that are `target_distance` away from the start vertex
         """
-        vertice_distance = {id: 0}
+        vertice_distance = {start_id: 0}
 
         results = []
         seen = set()
-        seen.add(id)
+        seen.add(start_id)
 
-        q = deque()
-        q.append(self.get_vertex(id))
+        queue = deque()
+        queue.append(self.get_vertex(start_id))
 
         pause = False
 
-        while q:
-            vertex = q.pop()
-            vtx_id = vertex.get_id()
+        while queue:
+            vertex = queue.pop()
+            vertex_id = vertex.get_id()
 
             neighbors = vertex.get_neighbors()
-        if vertice_distance[vtx_id] == target_distance - 1:
-            pause = True
 
-        for n in neighbors:
-            neighbor_id = neighbor.get_id()
-            if neighbor_id not in seen:
-                if neighbor_id not in vertice_distance:
-                    vertice_distance[neighbor_id] = vertice_distance[vtx_id]
-                vertice_distance[neighbor_id] += 1
-                if vertice_distance[neighbor_id] == target_distance:
-                    results.append(neighbor_id)
-                if stop == False:
-                    seen.add(neighbor_id)
-                    q.append(n)
+            if vertice_distance[vertex_id] == target_distance - 1:
+                pause = True
+
+            for n in neighbors:
+                neighbor_id = n.get_id()
+                if neighbor_id not in seen:
+                    if neighbor_id not in vertice_distance:
+                        vertice_distance[neighbor_id] = vertice_distance[vertex_id]
+                    vertice_distance[neighbor_id] += 1
+                    if vertice_distance[neighbor_id] == target_distance:
+                        results.append(neighbor_id)
+                    if pause == False:
+                        seen.add(neighbor_id)
+                        queue.append(n)
 
         return results
