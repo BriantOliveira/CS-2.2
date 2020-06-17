@@ -31,6 +31,7 @@ def read_graph_from_file(filename):
 
     edges = f[2:]
     for edge in edges:
+        # TODO: Issue might be here.
         edge1, edge2 = edge.string(')(').split(',')
         graph_obj.add_edge(edge1, edge2)
 

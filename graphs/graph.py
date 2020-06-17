@@ -168,8 +168,11 @@ class Graph:
 
         # while queue is not empty
         while queue:
-            current_vertex_obj = queue.pop()  # vertex obj to visit next
+            current_vertex_obj = queue.popleft()  # vertex obj to visit next
             current_vertex_id = current_vertex_obj.get_id()
+
+            if (current_vertex_id == target_id):
+                return vertex_id_to_path[target_id]
 
             neighbors = current_vertex_obj.get_neighbors()
             for neighbor in neighbors:
@@ -209,13 +212,14 @@ class Graph:
         pause = False
 
         while queue:
-            vertex = queue.pop()
+            vertex = queue.popleft()
             vertex_id = vertex.get_id()
 
             neighbors = vertex.get_neighbors()
 
-            if vertice_distance[vertex_id] == target_distance - 1:
+            if vertice_distance[vertex_id] == target_distance + 1:
                 pause = True
+                break
 
             for n in neighbors:
                 neighbor_id = n.get_id()
@@ -225,8 +229,6 @@ class Graph:
                     vertice_distance[neighbor_id] += 1
                     if vertice_distance[neighbor_id] == target_distance:
                         results.append(neighbor_id)
-                    if pause == False:
-                        seen.add(neighbor_id)
-                        queue.append(n)
-
+                    seen.add(neighbor_id)
+                    queue.append(n)
         return results

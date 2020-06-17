@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     # Find shortest path
     print('Finding shortest path from vertex A to vertex E...')
-    shortest_path = graph.find_shortest_path('A', 'E')
+    shortest_path = graph.find_shortest_path('A', 'G')
     print(shortest_path)
 
     # Find all vertices N distance away
