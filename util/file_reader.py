@@ -30,10 +30,11 @@ def read_graph_from_file(filename):
     # TODO: Use the 3rd+ line to add the edges to the graph
 
     edges = f[2:]
-    for edge in edges:
-        # TODO: Issue might be here.
-        edge1, edge2 = edge.string(')(').split(',')
-        graph_obj.add_edge(edge1, edge2)
+    for e in edges:
+        # FIXME: Issue might be here.
+        print(type(e))
+        v1, v2 = e.strip(')(').split(',')
+        graph_obj.add_edge(v1, v2)
 
     return graph_obj
 
