@@ -1,4 +1,5 @@
 from collections import deque
+from random import choice
 
 
 class Vertex(object):
@@ -44,6 +45,7 @@ class Vertex(object):
 
 
 class Graph:
+
     """ Graph Class
     Represents a directed or undirected graph.
     """
@@ -232,3 +234,212 @@ class Graph:
                     seen.add(neighbor_id)
                     queue.append(n)
         return results
+
+    def is_bipartite(self):
+        """
+        Return True if the graph is bipartite, and False otherwise.
+        """
+
+        start_id = choice(list(self.__vertex_dict.keys()))
+
+        queue = deque()
+        queue.append(self.get_vertex(start_id))
+
+        all_colors = {
+            start_id: "red"
+        }
+
+        while queue:
+            vertex_object = queue.pop()
+            vertex_id = vertex_object.get_id()
+
+            neighbors = vertex_object.get_neighbors()
+
+            for n in neighbors:
+                n_id = n.get_id()
+                if n_id not in all_colors:
+                    all_colors[n_id] = "blue" if all_colors[vertex_id] == "red" else "red"
+                    queue.appendleft(n)
+                else:
+                    if all_colors[n_id] == all_colors[vertex_id]:
+                        return False
+        return True
+
+    def get_connected_components(self):
+        """
+        Return a list of all connected components, with each connected component
+        represented as a list of vertex ids.
+        """
+        start_id = choice(list(self.__vertex_dict.keys()))
+
+        # must be a list, can't be a set because random.choice does not it
+        ids_left = list(self.__vertex_dict.keys())
+        ids_left.remove(start_id)
+
+        seen = set()
+        seen.add(start_id)
+
+        queue = deque()
+        queue.append(self.get_vertex(start_id))
+
+        components = []
+        com = []
+        while queue:
+            vertex_oject = queue.pop()
+            vertex_id = vertex_oject.get_id()
+            com.append(vertex_id)
+
+            neighbors = vertex_oject.get_neighbors()
+
+            for n in neighbors:
+                n_id = n.get_id()
+                if n_id not in seen:
+                    seen.add(n_id)
+                    queue.appendleft(n)
+                    ids_left.remove(n_id)
+
+            # if there is no vertex left in the queue
+            if len(queue) == 0:
+                components.append(com)
+                # if there are no more components left to traverse through
+                if len(ids_left) == 0:
+                    break
+                com = []
+                new_start = choice(ids_left)
+                seen.add(new_start)
+                queue.appendleft(self.get_vertex(new_start))
+                ids_left.remove(new_start)
+
+        return components
+
+    def find_path_dfs_iter(self, start_id, target_id):
+        """
+        Use DFS with a stack to find a path from start_id to target_id.
+        """
+        if not self.contains_id(start_id) or not self.contains_id(target_id):
+            raise KeyError("One or both vertices are not in the graph!")
+
+        paths = {
+            start_id: [start_id]
+        }
+
+        stack = deque()
+        stack.append(self.get_vertex(start_id))
+
+        while stack:
+            vertex_object = stack.pop()
+            vertex_id = vertex_object.get_id()
+
+            neighbors = vertex_object.get_neighbors()
+
+            for n in neighbors:
+                n_id = n.get_id()
+                if n_id not in paths:
+                    current_path = paths[vertex_id]
+                    next_path = current_path + [n_id]
+                    if n_id == target_id:
+                        return next_path
+                    paths[n_id] = next_path
+                    stack.append(n)
+        return paths
+
+    def dfs_traversal(self, start_id):
+        """Visit each vertex, starting with start_id, in DFS order."""
+
+        visited = set()  # set of vertices we've visited so far
+
+        def dfs_traversal_recursive(start_vertex):
+            print(f'Visiting vertex {start_vertex.get_id()}')
+
+            # recurse for each vertex in neighbors
+            for neighbor in start_vertex.get_neighbors():
+                if neighbor.get_id() not in visited:
+                    visited.add(neighbor.get_id())
+                    dfs_traversal_recursive(neighbor)
+            return
+
+        visited.add(start_id)
+        start_vertex = self.get_vertex(start_id)
+        dfs_traversal_recursive(start_vertex)
+
+    def contains_cycle(self):
+        """
+        Return True if the directed graph contains a cycle, False otherwise.
+        """
+        def dfs_cycle(vertex, visited, recursion_stack):
+            vertex_id = vertex.get_id()
+            visited.append(vertex_id)
+            neighbors = vertex.get_neighbors()
+            for n in neighbors:
+                n_id = n.get_id()
+                if n_id in visited:
+                    recursion_stack.append(True)
+                    return
+                else:
+                    recursion_stack.append(False)
+                    dfs_cycle(n, visited, recursion_stack)
+            return recursion_stack[-1]
+
+        start_id = list(self.__vertex_dict.keys())[0]
+        start_obj = self.get_vertex(start_id)
+        visited, recursion_stack = [start_id], []
+        is_cycle = dfs_cycle(start_obj, visited, recursion_stack)
+        return is_cycle
+
+    def topological_sort(self):
+        """
+        Return a valid ordering of vertices in a directed acyclic graph.
+        If the graph contains a cycle, throw a ValueError.
+
+        # TODO: Create a stack to hold the vertex ordering.
+        # TODO: For each unvisited vertex, execute a DFS from that vertex.
+        # TODO: On the way back up the recursion tree (that is, after visiting a 
+        # vertex's neighbors), add the vertex to the stack.
+        # TODO: Reverse the contents of the stack and return it as a valid ordering.
+        """
+        # will submit this part late
+        pass
+
+
+if __name__ == "__main__":
+    graph = Graph(is_directed=True)
+    graph.add_vertex('A')
+    graph.add_vertex('B')
+    graph.add_vertex('C')
+    # graph.add_vertex('D')
+    # graph.add_vertex('E')
+    # graph.add_vertex('F')
+    # graph.add_vertex('G')
+    # graph.add_vertex('H')
+    # graph.add_vertex('Y')
+    # graph.add_vertex('Z')
+
+    graph.add_edge('A', 'B')
+    # graph.add_edge('A', 'D')
+    graph.add_edge('B', 'C')
+    # graph.add_edge('C', 'D')
+    graph.add_edge('C', 'A')
+
+    # graph.add_edge('A', 'B')
+    # graph.add_edge('A', 'E')
+    # graph.add_edge('B', 'C')
+    # graph.add_edge('C', 'D')
+    # graph.add_edge('B', 'D')
+    # graph.add_edge('E', 'F')
+    # graph.add_edge('G', 'D')
+
+    # graph.add_edge('A', 'B')
+    # graph.add_edge('A', 'C')
+    # graph.add_edge('B', 'C')
+    # graph.add_edge('C', 'Z')
+    # graph.add_edge('D', 'E')
+    # graph.add_edge('E', 'F')
+    # graph.add_edge('F', 'Y')
+    # graph.add_edge('G', 'H')
+
+    # print(graph.is_bipartite())
+    # print(graph.get_connected_components())
+    # print(graph.bfs_traversal('A'))
+    # print(graph.find_path_dfs_iter('A', 'F'))
+    # print(graph.topological_sort())
+    print(graph.contains_cycle())
