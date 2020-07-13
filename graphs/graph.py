@@ -391,14 +391,52 @@ class Graph:
         Return a valid ordering of vertices in a directed acyclic graph.
         If the graph contains a cycle, throw a ValueError.
 
+        """
         # TODO: Create a stack to hold the vertex ordering.
         # TODO: For each unvisited vertex, execute a DFS from that vertex.
-        # TODO: On the way back up the recursion tree (that is, after visiting a 
+        # TODO: On the way back up the recursion tree (that is, after visiting a
         # vertex's neighbors), add the vertex to the stack.
         # TODO: Reverse the contents of the stack and return it as a valid ordering.
-        """
-        # will submit this part late
-        pass
+
+        vertexes = self.get_vertices()
+        indegree_dict = {}
+        for vert in vertexes:
+            if vert.get_id() not in indegree_dict:
+                indegree_dict[vert.get_id()] = 0
+            for neighbor in vert.get_neighbors():
+                neighbor_id = neighbor.get_id()
+                if neighbor_id in indegree_dict:
+                    indegree_dict[neighbor_id] += 1
+                else:
+                    indegree_dict[neighbor_id] = 1
+
+        indeg0 = []
+        for vertex_id, indegree in indegree_dict.items():
+            if indegree == 0:
+                indeg0.append(vertex_id)
+
+        sorted_list = []
+
+        while len(indeg0) > 0:
+            current_id = indeg0.pop()
+            sorted_list.append(current_id)
+            current_vertex = self.get_vertex(current_id)
+            for neighbor in current_vertex.get_neighbors():
+                neighbor_id = neighbor.get_id()
+                indegree_dict[neighbor_id] -= 1
+                if indegree_dict[neighbor_id] == 0:
+                    indeg0.append(neighbor_id)
+        return sorted_list
+
+    def greedy_coloring(self):
+        """Return a dictionary of vertex id -> color."""
+        vertex_id_color = {}
+
+        # TODO: Fill in the dictionary by visiting each vertex and checking the
+        # colors of its neighbors, then assigning the “smallest” color which has
+        # not yet been assigned.
+
+        return vertex_id_color
 
 
 if __name__ == "__main__":
