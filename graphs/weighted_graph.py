@@ -37,16 +37,6 @@ class WeightedVertex(Vertex):
         """Return the id of this vertex."""
         return self.id
 
-    # def __str__(self):
-    #     """Output the list of neighbors of this vertex."""
-    #     neighbor_ids = [neighbor.get_id() for neighbor in self.get_neighbors()]
-    #     return f'{self.id} adjacent to {neighbor_ids}'
-
-    # def __repr__(self):
-    #     """Output the list of neighbors of this vertex."""
-    #     neighbor_ids = [neighbor.get_id() for neighbor in self.get_neighbors()]
-    #     return f'{self.id} adjacent to {neighbor_ids}'
-
 
 class WeightedGraph(Graph):
 
