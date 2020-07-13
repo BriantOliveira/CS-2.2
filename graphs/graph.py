@@ -428,6 +428,31 @@ class Graph:
                     indeg0.append(neighbor_id)
         return sorted_list
 
+    def find_connected_components(self):
+        all_ids = set(self.__vertex_dict.keys())
+
+        components = []
+
+        while len(all_ids) > 0:
+            start_id = list(all_ids).pop()
+            all_ids.remove(start_id)
+            start_vertex = self.get_vertex(start_id)
+            seen = set()
+            quene = [start_id]
+            seen.add(start_id)
+            while len(quene) > 0:
+                current_id = quene.pop(0)
+                current_vertex = self.get_vertex(current_id)
+                for neighbor in current_vertex.get_neighbors():
+                    neighbor_id = neighbor.get_id()
+                    if neighbor_id in all_ids:
+                        all_ids.remove(neighbor_id)
+                    if neighbor_id not in seen:
+                        quene.append(neighbor_id)
+                        seen.add(neighbor_id)
+            components.append(list(seen))
+        return(components)
+
     def greedy_coloring(self):
         """Return a dictionary of vertex id -> color."""
         vertex_id_color = {}
